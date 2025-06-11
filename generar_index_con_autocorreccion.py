@@ -2,6 +2,10 @@
 
 import os
 import pandas as pd
+try:
+    import polars as pl
+except ImportError:  # polars is optional
+    pl = None
 import numpy as np
 import faiss
 import openai
@@ -16,7 +20,10 @@ if not os.path.exists(CSV_PATH):
     raise FileNotFoundError(CSV_PATH)
 
 print("Leyendo CSV...")
-df = pd.read_csv(CSV_PATH)
+if pl:
+    df = pl.read_csv(CSV_PATH).to_pandas()
+else:
+    df = pd.read_csv(CSV_PATH)
 col = next((c for c in df.columns if c in POSSIBLE), None)
 if not col:
     raise ValueError(f"No se encontró columna válida en {df.columns}")
@@ -35,3 +42,4 @@ index = faiss.IndexFlatL2(embs.shape[1])
 index.add(embs)
 faiss.write_index(index, INDEX_PATH)
 print(f"Índice guardado en {INDEX_PATH}")
+

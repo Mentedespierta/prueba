@@ -2,5 +2,9 @@ streamlit
 openai
 faiss-cpu
 pandas
+polars
+langchain
+langchain-community
+PyMuPDF
 docx2txt
 pytest
